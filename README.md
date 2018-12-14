@@ -24,10 +24,12 @@ Stock market predictions lend themselves well to a machine learning framework du
 - GoogleUSE_PCA.py
 
 ### Use the following files for Stock Movement Prediction
-- Logreg_SVM.py
-- NeuralNetwork.py
-- RNN.py
-- CNN.py
+- Logreg_baseline.py (Logistic regression without sentiment data)
+- Logreg_SVM.py (Logistic regression with sentiment data and SVM with rbf kernel on Google and NY times data)
+- RandomForest.py (Random Forest on Google and NY times data)
+- NeuralNetwork.py (Fully connected neutral network on Google and NY times data)
+- RNN.py (RNN on Google and NY times data by ticker)
+- CNN.py (CNN on Google and NY times data)
 
 ### Use the following file to output interactive prediction plot by ticker
 - InteractivePlot.ipynb
