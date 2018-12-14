@@ -82,9 +82,9 @@ def main(filename):
     test_accuracy = calc_accuracy(y_hat, y_test)
     print('The test accuracy of the SVM is ', test_accuracy)
     # Conf matrix
-    print('\n Training clasification report:\n', classification_report(y_train, pred))
+    print('\n Training classification report:\n', classification_report(y_train, pred))
     print('\n confusion matrix:\n',confusion_matrix(y_train, pred))
-    print('\n Test clasification report:\n', classification_report(y_test, y_hat))
+    print('\n Test classification report:\n', classification_report(y_test, y_hat))
     print('\n confusion matrix:\n',confusion_matrix(y_test, y_hat))
 
 if __name__ == '__main__':
