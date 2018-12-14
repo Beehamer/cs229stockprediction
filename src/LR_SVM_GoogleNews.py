@@ -1,3 +1,6 @@
+'''
+Fit logisitic regression and SVM on google news data
+'''
 import pandas as pd
 import csv
 import numpy as np
