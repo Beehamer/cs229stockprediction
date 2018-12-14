@@ -9,10 +9,10 @@ Stock market predictions lend themselves well to a machine learning framework du
 ![Optional Text](../master/src/combinedmodel.png)
 
 ## Requires
-- scikit-learn 
-- pytorch
-- keras
-- tensorflow
+- scikit-learn `pip install sklearn`
+- pytorch `pip install pytorch`
+- keras `pip install keras`
+- tensorflow `pip install tensorflow`
 - tensorflow hub `pip install tensorflow-hub`
 
 ### Use the following files for data gathering and preprocessing
