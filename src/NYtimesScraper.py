@@ -1,3 +1,6 @@
+'''
+Scrape NY Times using NY Times API
+'''
 from nytimesarticle import articleAPI
 import time
 import csv
