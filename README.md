@@ -1,5 +1,5 @@
 # cs229stockprediction
-Novel approaches to sentiment analysis for stock prediction . 
+Novel approaches to sentiment analysis for stock prediction   
 Chris Wang, Yilun Xu, Qingyang Wang   
 Stanford University   
 {chrwang, ylxu, iriswang} @ stanford.edu  
