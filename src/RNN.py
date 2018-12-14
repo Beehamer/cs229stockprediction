@@ -1,3 +1,6 @@
+'''
+Fit RNN on NY Times and google news data
+'''
 import keras
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
