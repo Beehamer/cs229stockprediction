@@ -1,10 +1,12 @@
+'''
+Fit baseline logisitic regression
+'''
 import glob
 import os
 import pandas as pd
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline  
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
