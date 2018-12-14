@@ -1,5 +1,5 @@
 '''
-Fit logisitic regression and SVM on google news data
+Fit logisitic regression and SVM on NY Times and google news data
 '''
 import pandas as pd
 import csv
@@ -14,8 +14,6 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
-
-
 def calc_accuracy(pred, y):
     pred = np.matrix(pred).reshape(-1, 1)
     y = np.matrix(y).reshape(-1, 1)
@@ -26,9 +24,9 @@ def calc_accuracy(pred, y):
             correct += 1
     return (correct * 1.0 / count)
 
-def main():
+def main(filename):
     # Load data
-    full = pd.read_csv('goog_avg.csv')
+    full = pd.read_csv(filename)
     full = full.drop(labels=['Unnamed: 0'], axis=1)
     full.head()
     full['Ticker'] = pd.Categorical(full['Ticker'])
@@ -90,3 +88,6 @@ def main():
     print('\n confusion matrix:\n',confusion_matrix(y_train, pred))
     print('\n Test clasification report:\n', classification_report(y_test, y_hat))
     print('\n confusion matrix:\n',confusion_matrix(y_test, y_hat))
+
+if __name__ == '__main__':
+    main('goog_avg.csv') # Input Google or NYtimes news
