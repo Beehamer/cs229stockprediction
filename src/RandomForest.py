@@ -1,79 +1,73 @@
-#import everything
+'''
+Fit random forest on NY Times and google news data
+'''
 import pandas as pd
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 
-def main(filename):
-    filename = 'stock_w_sentiment.csv'
-    file = pd.read_csv(filename)
-    print(file.shape)
-    
-    # Data preprocessing
-    #encode the ticker and sector into one-hot integer categories for our logistic regression vector
-    file['headline_HE'].fillna("no headline")
-    file['headline_LM'].fillna("no headline")
-    file['headline_QDAP'].fillna("no headline")
-    file['snippet_HE'].fillna("no snippet")
-    file['snippet_LM'].fillna("no snippet")
-    file['snippet_QDAP'].fillna("no snippet")
-    file.Ticker = pd.Categorical(file.Ticker)
-    file['ticker_code'] = file.Ticker.cat.codes
-    file.Sector = pd.Categorical(file.Sector)
-    file['sector_code'] = file.Sector.cat.codes
-    file.headline_HE = pd.Categorical(file.headline_HE)
-    file['headline_HE'] = file.headline_HE.cat.codes
-    file.headline_LM = pd.Categorical(file.headline_LM)
-    file['headline_LM'] = file.headline_LM.cat.codes
-    file.headline_QDAP = pd.Categorical(file.headline_QDAP)
-    file['headline_QDAP'] = file.headline_QDAP.cat.codes
-    file.snippet_HE = pd.Categorical(file.snippet_HE)
-    file['snippet_HE'] = file.snippet_HE.cat.codes
-    file.snippet_LM = pd.Categorical(file.snippet_LM)
-    file['snippet_LM'] = file.snippet_LM.cat.codes
-    file.snippet_QDAP = pd.Categorical(file.snippet_QDAP)
-    file['snippet_QDAP'] = file.snippet_QDAP.cat.codes
-    file = file.drop_duplicates(subset=['Date', 'Ticker'])
-    #file = pd.get_dummies(file,columns=['Ticker', 'Sector', 'headline_HE', 'headline_LM', 'headline_QDAP', 'snippet_HE', 'snippet_LM', 'snippet_QDAP'])
-    #add in y-label
-    y = np.zeros(file.shape[0])
-    print(file['Adj Close'].shape)
-    daily = file['Adj Close'].shift(-1)/file['Adj Close'] - 1
-    for i in range(file.shape[0]):
-        if daily.iloc[i] >= 0.01:
-            y[i] = 3
-        elif daily.iloc[i] >= 0.00:
-            y[i] = 2
-        elif daily.iloc[i] >= -0.01:
-            y[i] = 1
-        else:
-            y[i] = 0
-    file['y-label'] = y
-    #for libor, just use yesterday's if no value
-    file['Libor'].fillna(method='pad', inplace=True)
-    #drop the rows with no value change (first 30 days)
-    file = file.dropna()
-    file.head()
-    
-    file.to_csv('stock_data_final_sent.csv', encoding='utf-8', index=True)
-    #split for train and test set, everything before 2017 is train
-    file_train = file.loc[file['Date'].apply(lambda x: x.split('-')[0])!= "2017"]
-    file_test = file.loc[file['Date'].apply(lambda x: x.split('-')[0]) == "2017"]
-    
-    train_x = file_train.drop(labels=['Date', 'y-label', 'Unnamed: 0', 'Unnamed: 0.1', 'Ticker', 'Sector'], axis=1).values.astype(np.float32)
-    train_y = file_train['y-label'].values.astype(np.float32)
-    test_x = file_test.drop(labels=['Date', 'y-label', 'Unnamed: 0', 'Unnamed: 0.1', 'Ticker', 'Sector'], axis=1).values.astype(np.float32)
-    test_y = file_test['y-label'].values.astype(np.float32)
-    
-    rf = RandomForestClassifier(n_estimators=250, oob_score=True, random_state=123456)
-    rf.fit(train_x, train_y)
+def calc_accuracy(pred, y):
+    pred = np.matrix(pred).reshape(-1, 1)
+    y = np.matrix(y).reshape(-1, 1)
+    count = y.shape[0]
+    correct = 0
+    for i in range (count):
+        if pred[i,0] == y[i, 0]:
+            correct += 1
+    return (correct * 1.0 / count)
 
-    predicted = rf.predict(test_x)
-    accuracy = accuracy_score(test_y, predicted)
+def main(filename):
+    # Load data
+    full = pd.read_csv(filename)
+    full = full.drop(labels=['Unnamed: 0'], axis=1)
+    full['Ticker'] = pd.Categorical(full['Ticker'])
+    full['Sector'] = pd.Categorical(full['Sector'])
+    #for libor, just use yesterday's if no value
+    full['Libor'].fillna(method='pad', inplace=True)
+    #for news, just use yesterday's if no value
+    for i in range(0, 40):
+        full[str(i)].fillna(method='pad', inplace=True)
+    #drop the rows with no value change (first 30 days)
+    full = full.dropna(subset=['Thirty-day Change (%)'])
+    full = full.drop(labels=['High','Low', 'Open', 'Close', 'Adj Close'], axis=1)
+    categorical = ['Ticker','Sector']
+    file_one_hot_encoded = pd.get_dummies(full, columns=categorical, drop_first=True)
+    in_set = file_one_hot_encoded
+    in_set.Date = pd.to_datetime(in_set.Date)
+    in_set['y-label'] = pd.Categorical(in_set['y-label'])
+    in_train = in_set[(in_set['Date'] <'2017-01-01')]
+    in_test = in_set[(in_set['Date'] >='2017-01-01')]
+    y_train = in_train['y-label']
+    y_test = in_test['y-label']
+    X_train = in_train.drop(labels=['Date', 'y-label'], axis=1)
+    X_test = in_test.drop(labels=['Date', 'y-label'], axis=1)
+    X_train['Volume'] = np.log(X_train['Volume']+0.5)
+    X_test['Volume'] = np.log(X_test['Volume']+0.5)
+    
+    # Fit Random Forest
+    rf = RandomForestClassifier(n_estimators=250, oob_score=True, random_state=123456)
+    rf.fit(X_train, y_train)
+    # Training acc
+    pred = rf.predict(X_train)
+    accuracy = calc_accuracy(pred, y_train)
+    print('The training accuracy of the Random Forest is ', accuracy)
+    # Test acc
+    y_hat = rf.predict(X_test)
+    test_accuracy = calc_accuracy(y_hat, y_test)
+    print('The test accuracy of the Random Forest is ', test_accuracy)
+    # Conf matrix
+    print('\n Training clasification report:\n', classification_report(y_train, pred))
+    print('\n confusion matrix:\n',confusion_matrix(y_train, pred))
+    print('\n Test clasification report:\n', classification_report(y_test, y_hat))
+    print('\n confusion matrix:\n',confusion_matrix(y_test, y_hat))
     
 if __name__ == '__main__':
-    main('stock_w_sentiment.csv') # Input Google or NYtimes news
+    main('goog_avg.csv') # Input Google or NYtimes news
 
