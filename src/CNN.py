@@ -1,3 +1,6 @@
+'''
+Fit CNN on NY Times and google news data
+'''
 import pandas as pd
 import numpy as np
 import keras
