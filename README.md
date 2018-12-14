@@ -23,8 +23,11 @@ Stock market predictions lend themselves well to a machine learning framework du
 ### Use the following file for text representation
 - GoogleUSE_PCA.py
 
-### Use the following file for Stock Movement Prediction
+### Use the following files for Stock Movement Prediction
 - Logreg_SVM.py
 - NeuralNetwork.py
 - RNN.py
 - CNN.py
+
+### Use the following file to output interactive prediction plot by ticker
+- InteractivePlot.ipynb
