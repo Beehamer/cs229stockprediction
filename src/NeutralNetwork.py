@@ -1,5 +1,5 @@
 '''
-Fit NN on google news data
+Fit NN on NYtimes and google news data
 '''
 import pandas as pd
 import csv
@@ -35,8 +35,8 @@ def evaluate(clf, X_train, y_train, X_test, y_test, verbose=True):
         print ('----------')
     return (training_accu, testing_accu)
 
-def main():
-    full = pd.read_csv('goog_avg.csv')
+def main(filename):
+    full = pd.read_csv(filename)
     full = full.drop(labels=['Unnamed: 0'], axis=1)
     full['Ticker'] = pd.Categorical(full['Ticker'])
     full['Sector'] = pd.Categorical(full['Sector'])
@@ -83,3 +83,6 @@ def main():
                 best_acc = test_acc
     evaluate(best_model, X_train, y_train, X_test, y_test, True)
     print (best_params)
+
+if __name__ == '__main__':
+    main('goog_avg.csv') # Input Google or NYtimes news
