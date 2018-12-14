@@ -15,7 +15,7 @@ Stock market predictions lend themselves well to a machine learning framework du
 - tensorflow hub `pip install tensorflow-hub`
 
 ### Use the following files for data gathering and preprocessing
-- GoogleNewsScraper.py
+- GoogleNewsScraper.py `python GoogleNewsScraper.py`
 - NYtimesScraper.py
 - Preprocessing.py
 
