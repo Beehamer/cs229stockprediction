@@ -28,7 +28,6 @@ def main(filename):
     # Load data
     full = pd.read_csv(filename)
     full = full.drop(labels=['Unnamed: 0'], axis=1)
-    full.head()
     full['Ticker'] = pd.Categorical(full['Ticker'])
     full['Sector'] = pd.Categorical(full['Sector'])
     #for libor, just use yesterday's if no value
@@ -39,7 +38,6 @@ def main(filename):
     #drop the rows with no value change (first 30 days)
     full = full.dropna(subset=['Thirty-day Change (%)'])
     full = full.drop(labels=['High','Low', 'Open', 'Close', 'Adj Close'], axis=1)
-    full.head()
     categorical = ['Ticker','Sector']
     file_one_hot_encoded = pd.get_dummies(full, columns=categorical, drop_first=True)
     in_set = file_one_hot_encoded
@@ -60,11 +58,11 @@ def main(filename):
     # Training acc
     pred = baseline_LR.predict(X_train)
     accuracy = calc_accuracy(pred, y_train)
-    print('The training accuracy of the SVM is ', accuracy)
+    print('The training accuracy of the Logistic Regression is ', accuracy)
     # Test acc
     y_hat = baseline_LR.predict(X_test)
     test_accuracy = calc_accuracy(y_hat, y_test)
-    print('The test accuracy of the SVM is ', test_accuracy)
+    print('The test accuracy of the Logistic Regression is ', test_accuracy)
     # Conf matrix
     print('\n Training clasification report:\n', classification_report(y_train, pred))
     print('\n confusion matrix:\n',confusion_matrix(y_train, pred))
