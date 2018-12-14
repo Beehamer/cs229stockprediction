@@ -1,3 +1,6 @@
+'''
+Preprocess and merge the data
+'''
 import numpy as np
 import pandas as pd
 import datetime as datetime
