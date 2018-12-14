@@ -13,3 +13,15 @@ Stock market predictions lend themselves well to a machine learning framework du
 - keras
 - tensorflow
 - tensorflow hub `pip install tensorflow-hub`
+
+### Use the following files for data gathering and preprocessing
+- GoogleNewsScraper.py
+- NYtimesScraper.py
+- Preprocessing.py
+
+### Use the following file for text representation
+- GoogleUSE_PCA.py
+
+### Use the following file for Stock Movement Prediction
+- Logreg_SVM.py
+- NeuralNetwork.py
