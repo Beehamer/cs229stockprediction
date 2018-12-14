@@ -26,3 +26,5 @@ Stock market predictions lend themselves well to a machine learning framework du
 ### Use the following file for Stock Movement Prediction
 - Logreg_SVM.py
 - NeuralNetwork.py
+- RNN.py
+- CNN.py
